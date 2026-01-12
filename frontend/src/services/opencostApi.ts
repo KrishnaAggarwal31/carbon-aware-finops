@@ -5,8 +5,14 @@ import type { DailyCost } from '../types';
 // 1. Deployment: VITE_API_BASE_URL will be https://backend.onrender.com (Root) -> Append /api
 // 2. Local: Fallback is http://localhost:3001 -> Append /api
 // Result: Always ensure we talk to /api endpoint
-const ENV_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
-const API_BASE_URL = ENV_URL.endsWith('/api') ? ENV_URL : `${ENV_URL}/api`;
+// Backend URL logic:
+// 1. Env Var: Always use if set
+// 2. Dev Mode: Default to localhost:3001
+// 3. Prod Mode: Default to relative path (assumes same-domain proxy/rewrite)
+const isDev = import.meta.env.MODE === 'development';
+const envUrl = import.meta.env.VITE_API_BASE_URL;
+const root = envUrl || (isDev ? 'http://localhost:3001' : '');
+const API_BASE_URL = root.endsWith('/api') ? root : `${root}/api`;
 
 export interface AllocationParams {
     window: string;        // e.g., "7d" or "24h"

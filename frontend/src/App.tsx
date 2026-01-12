@@ -81,7 +81,7 @@ function Dashboard() {
         <div style={{ textAlign: 'center' }}>
           <h2>Connection Error</h2>
           <p>{error}</p>
-          <p style={{ color: '#aaa', marginTop: '1rem' }}>Ensure Backend is running on port 3001</p>
+          <p style={{ color: '#aaa', marginTop: '1rem' }}>Ensure Backend is reachable.</p>
         </div>
       </div>
     );

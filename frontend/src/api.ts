@@ -3,8 +3,11 @@ import type { MetricsResponse, Recommendation } from './types';
 
 // In a real scenario, this matches the backend URL
 // Backend URL logic:
-const ENV_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
-const API_BASE_URL = ENV_URL.endsWith('/api') ? ENV_URL : `${ENV_URL}/api`;
+// Backend URL logic:
+const isDev = import.meta.env.MODE === 'development';
+const envUrl = import.meta.env.VITE_API_BASE_URL;
+const root = envUrl || (isDev ? 'http://localhost:3001' : '');
+const API_BASE_URL = root.endsWith('/api') ? root : `${root}/api`;
 
 export const fetchMetrics = async (): Promise<MetricsResponse> => {
     const response = await axios.get(`${API_BASE_URL}/metrics`);
