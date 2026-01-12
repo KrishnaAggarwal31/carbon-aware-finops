@@ -1,0 +1,36 @@
+# Default values for carbon-finops.
+
+backend:
+  image:
+    repository: carbon-finops-backend
+    pullPolicy: IfNotPresent
+    tag: "latest"
+  replicaCount: 1
+  service:
+    type: ClusterIP
+    port: 3001
+  resources: 
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+frontend:
+  image:
+    repository: carbon-finops-frontend
+    pullPolicy: IfNotPresent
+    tag: "latest"
+  replicaCount: 1
+  service:
+    type: NodePort  # Easy access for Minikube/Kind
+    port: 80
+    nodePort: 30080
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi

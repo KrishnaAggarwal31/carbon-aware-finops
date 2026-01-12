@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}-frontend
+  labels:
+    app: {{ .Chart.Name }}-frontend
+spec:
+  replicas: {{ .Values.frontend.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}-frontend
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}-frontend
+    spec:
+      containers:
+        - name: frontend
+          image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}"
+          imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          # In a real K8s env, we'd use ConfigMap to inject the backend URL.
+          # For now, we assume a proxy or consistent DNS, or simple hardcoding for MVP.
+          # Here we keep it simple since Nginx is serving static files.
+          resources:
+            {{- toYaml .Values.frontend.resources | nindent 12 }}
