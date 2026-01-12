@@ -17,7 +17,7 @@ const mockCarbonData = [
 
 async function fetchPrometheusHistory(windowStr = '7d', accumulate = false, aggregate = 'namespace', stepStr = '86400') {
     try {
-        if (!PROMETHEUS_URL) return []; // Return empty/mock if no URL configured
+        // if (!PROMETHEUS_URL) return []; // Allow execution to proceed to Hybrid Backfill logic below
         const end = Math.floor(Date.now() / 1000);
         let start = end - (7 * 24 * 3600);
         let step = parseInt(stepStr);
@@ -33,14 +33,22 @@ async function fetchPrometheusHistory(windowStr = '7d', accumulate = false, aggr
         const cpuQuery = `sum(increase(container_cpu_usage_seconds_total[${range}])) by (${aggregate})`;
         const memQuery = `sum(avg_over_time(container_memory_usage_bytes[${range}])) by (${aggregate})`;
 
-        const [cpuRes, memRes] = await Promise.all([
-            axios.get(`${PROMETHEUS_URL}/api/v1/query_range`, { params: { query: cpuQuery, start, end, step } }),
-            axios.get(`${PROMETHEUS_URL}/api/v1/query_range`, { params: { query: memQuery, start, end, step } })
-        ]);
+        let cpuData: any[] = [];
+        let memData: any[] = [];
+        const dailyCosts: any[] = [];
 
-        const dailyCosts = [];
-        const cpuData = cpuRes.data.data.result;
-        const memData = memRes.data.data.result;
+        if (PROMETHEUS_URL) {
+            try {
+                const [cpuRes, memRes] = await Promise.all([
+                    axios.get(`${PROMETHEUS_URL}/api/v1/query_range`, { params: { query: cpuQuery, start, end, step } }),
+                    axios.get(`${PROMETHEUS_URL}/api/v1/query_range`, { params: { query: memQuery, start, end, step } })
+                ]);
+                cpuData = cpuRes.data.data.result;
+                memData = memRes.data.data.result;
+            } catch (err) {
+                console.warn("Prometheus query failed, falling back to simulation.");
+            }
+        }
 
         const findValue = (data, ns, time) => {
             const series = data.find((d) => d.metric[aggregate] === ns);
