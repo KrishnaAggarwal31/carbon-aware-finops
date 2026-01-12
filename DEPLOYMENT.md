@@ -19,21 +19,22 @@ Render can hoist both the React Frontend and Node.js Backend from this single re
 
 ## Option 2: Vercel (Frontend) + Render (Backend)
 
-If you prefer Vercel for the frontend:
+If you prefer Vercel's global CDN for the frontend:
 
 1.  **Deploy Backend on Render**:
-    *   New -> Web Service.
-    *   Root Directory: `backend`.
-    *   Build Command: `npm install && npm run build`.
-    *   Start Command: `npm start`.
-    *   Copy the **Service URL** (e.g., `https://my-api.onrender.com`).
+    *   Follow Option 1 steps but you can delete/ignore the frontend service.
+    *   Copy your backend URL (e.g., `https://finops-backend-xyz.onrender.com`).
 
 2.  **Deploy Frontend on Vercel**:
-    *   Go to [Vercel](https://vercel.com/) -> Add New Project.
-    *   Select your repo.
-    *   Root Directory: `frontend`.
-    *   **Environment Variables**: Add `VITE_API_BASE_URL` = `https://my-api.onrender.com/api`.
-    *   Deploy.
+    *   Go to [Vercel](https://vercel.com/new).
+    *   Import your `carbon-aware-finops` repo.
+    *   **Root Directory**: Click "Edit" and select `frontend`.
+    *   **Environment Variables**: Add `VITE_API_BASE_URL` = `https://finops-backend-xyz.onrender.com`.
+        *   *(Note: The app automatically handles appending `/api`)*.
+    *   Click **Deploy**.
+
+### Why not Backend on Vercel?
+This backend uses background polling for Prometheus metrics, which works best on a persistent server (like Render or Railway). Vercel Serverless Functions have a 10-second timeout limit on the free tier, which can cause issues with slower data queries.
 
 ## 🐳 Option 3: Kubernetes / Docker
 
