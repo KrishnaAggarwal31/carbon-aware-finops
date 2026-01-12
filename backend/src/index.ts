@@ -4,7 +4,7 @@ import axios from 'axios';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
-const PROMETHEUS_URL = process.env.PROMETHEUS_URL || 'http://localhost:9090';
+const PROMETHEUS_URL = process.env.PROMETHEUS_URL || '';
 
 app.use(cors());
 app.use(express.json());
@@ -351,5 +351,5 @@ app.get('/api/recommendations', (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });

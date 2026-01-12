@@ -81,7 +81,7 @@ function Dashboard() {
         <div style={{ textAlign: 'center' }}>
           <h2>Connection Error</h2>
           <p>{error}</p>
-          <p style={{ color: '#aaa', marginTop: '1rem' }}>Ensure Backend is reachable.</p>
+          <p style={{ color: '#aaa', marginTop: '1rem' }}>Backend Unavailable</p>
         </div>
       </div>
     );

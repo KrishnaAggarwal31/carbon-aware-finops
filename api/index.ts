@@ -3,7 +3,7 @@ import cors from 'cors';
 import axios from 'axios';
 
 const app = express();
-const PROMETHEUS_URL = process.env.PROMETHEUS_URL || 'http://localhost:9090';
+const PROMETHEUS_URL = process.env.PROMETHEUS_URL; // No default localhost
 
 app.use(cors());
 app.use(express.json());
@@ -17,6 +17,7 @@ const mockCarbonData = [
 
 async function fetchPrometheusHistory(windowStr = '7d', accumulate = false, aggregate = 'namespace', stepStr = '86400') {
     try {
+        if (!PROMETHEUS_URL) return []; // Return empty/mock if no URL configured
         const end = Math.floor(Date.now() / 1000);
         let start = end - (7 * 24 * 3600);
         let step = parseInt(stepStr);
@@ -138,6 +139,7 @@ async function fetchPrometheusHistory(windowStr = '7d', accumulate = false, aggr
 
 async function fetchPrometheusMetrics() {
     try {
+        if (!PROMETHEUS_URL) return [];
         const cpuQuery = 'sum(rate(container_cpu_usage_seconds_total[5m])) by (namespace)';
         const memQuery = 'sum(container_memory_usage_bytes) by (namespace)';
         const capQuery = 'sum(machine_cpu_cores)';
