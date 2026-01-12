@@ -1,7 +1,7 @@
 import axios from 'axios';
 import type { DailyCost } from '../types';
 
-const API_BASE_URL = 'http://localhost:3001/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api';
 
 export interface AllocationParams {
     window: string;        // e.g., "7d" or "24h"
