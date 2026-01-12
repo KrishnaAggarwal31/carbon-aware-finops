@@ -1,9 +1,10 @@
 services:
-  # Backend Service
+  # Backend Service (Dynamic Node.js API)
   - type: web
     name: finops-backend
     env: node
     root: backend
+    plan: free # Explicitly use Free tier if available
     buildCommand: npm install && npm run build
     startCommand: npm start
     envVars:
@@ -11,10 +12,10 @@ services:
         value: 10000
     healthCheckPath: /api/metrics
 
-  # Frontend Service (Static Site)
-  - type: static
-    name: finops-frontend
-    env: static
+# Frontend Service (Static Site)
+# Static sites must be defined in their own top-level block, not under 'services'
+staticSites:
+  - name: finops-frontend
     root: frontend
     buildCommand: npm install && npm run build
     staticPublishPath: ./dist
@@ -24,10 +25,3 @@ services:
           type: web
           name: finops-backend
           property: url
-        # Append /api manually if needed, or update code. 
-        # Current code expects VITE_API_BASE_URL to include /api? NO.
-        # Check code: `${API_BASE_URL}/metrics`. 
-        # If Render gives https://backend.onrender.com, we need https://backend.onrender.com/api
-        # So in Render UI, user might need to append /api. 
-        # Actually easier to fix code to not assume /api in env var, or just document it.
-        # Let's document it.

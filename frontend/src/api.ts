@@ -2,7 +2,9 @@ import axios from 'axios';
 import type { MetricsResponse, Recommendation } from './types';
 
 // In a real scenario, this matches the backend URL
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api';
+// Backend URL logic:
+const ENV_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+const API_BASE_URL = ENV_URL.endsWith('/api') ? ENV_URL : `${ENV_URL}/api`;
 
 export const fetchMetrics = async (): Promise<MetricsResponse> => {
     const response = await axios.get(`${API_BASE_URL}/metrics`);

@@ -1,7 +1,12 @@
 import axios from 'axios';
 import type { DailyCost } from '../types';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api';
+// Backend URL logic:
+// 1. Deployment: VITE_API_BASE_URL will be https://backend.onrender.com (Root) -> Append /api
+// 2. Local: Fallback is http://localhost:3001 -> Append /api
+// Result: Always ensure we talk to /api endpoint
+const ENV_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+const API_BASE_URL = ENV_URL.endsWith('/api') ? ENV_URL : `${ENV_URL}/api`;
 
 export interface AllocationParams {
     window: string;        // e.g., "7d" or "24h"
