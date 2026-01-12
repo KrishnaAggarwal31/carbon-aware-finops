@@ -4,9 +4,11 @@ import type { MetricsResponse, Recommendation } from './types';
 // In a real scenario, this matches the backend URL
 // Backend URL logic:
 // Backend URL logic:
-const isDev = import.meta.env.MODE === 'development';
+// Backend URL logic:
 const envUrl = import.meta.env.VITE_API_BASE_URL;
-const root = envUrl || (isDev ? 'http://localhost:3001' : '');
+const isBrowser = typeof window !== 'undefined';
+const isLocal = isBrowser && window.location.hostname === 'localhost';
+const root = envUrl || (isLocal ? 'http://localhost:3001' : '');
 const API_BASE_URL = root.endsWith('/api') ? root : `${root}/api`;
 
 export const fetchMetrics = async (): Promise<MetricsResponse> => {

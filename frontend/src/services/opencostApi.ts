@@ -9,9 +9,15 @@ import type { DailyCost } from '../types';
 // 1. Env Var: Always use if set
 // 2. Dev Mode: Default to localhost:3001
 // 3. Prod Mode: Default to relative path (assumes same-domain proxy/rewrite)
-const isDev = import.meta.env.MODE === 'development';
+// Backend URL logic:
+// 1. Env Var: Always use if set
+// 2. Browser Hostname Check: If not localhost, force relative path (Production)
+// 3. Fallback: localhost:3001
 const envUrl = import.meta.env.VITE_API_BASE_URL;
-const root = envUrl || (isDev ? 'http://localhost:3001' : '');
+// Check if we are running in a browser environment
+const isBrowser = typeof window !== 'undefined';
+const isLocal = isBrowser && window.location.hostname === 'localhost';
+const root = envUrl || (isLocal ? 'http://localhost:3001' : '');
 const API_BASE_URL = root.endsWith('/api') ? root : `${root}/api`;
 
 export interface AllocationParams {
